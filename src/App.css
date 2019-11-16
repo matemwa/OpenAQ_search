@@ -8,13 +8,19 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  height: 20vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(5vmin);
   color: white;
+}
+
+.App-Component {
+  text-align: center;
+  margin: 64px auto 0 auto;
+  width: 600px;
 }
 
 .App-link {
