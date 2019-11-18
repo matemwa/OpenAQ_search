@@ -1,8 +1,8 @@
 import React from 'react';
 import './AutocompleteCountry.css'
 import CountryTenCitiesDisplay from './CountryTenCitiesDisplay'
-
-const countryCodeList = {'Poland':'PL', 'Germany':'DE', 'France':'FR', 'Spain':'ES'}
+const countryCodeList = {'Poland':'PL', 'Germany':'DE', 'France':'FR', 'Spain':'ES'};
+const parameterList = ['bc', 'co', 'no2', 'o3', 'pm10', 'pm25', 'so2'];
 
 class AutocompleteCountry extends React.Component {
   constructor(props) {
@@ -15,7 +15,9 @@ class AutocompleteCountry extends React.Component {
       country: '',
       countryData: null,
       url: 'https://api.openaq.org/v1/locations?country=',
-      shouldFetchData: false
+      shouldFetchData: false,
+      airQualityParamBar: false,
+      airQualityParameter: '',
       }
   }
 
@@ -27,7 +29,7 @@ class AutocompleteCountry extends React.Component {
       const regex = new RegExp(`${inputValue}`, 'i');
       suggestions = items.sort().filter(v => regex.test(v));
     }
-    this.setState(() => ({ suggestions, text: inputValue }));
+    this.setState(({ suggestions, text: inputValue }));
   }
 
   suggestionSelected (value) {
@@ -37,8 +39,9 @@ class AutocompleteCountry extends React.Component {
       isCountryPicked: true,
       country: value,
       countryCode: countryCodeList[value],
-      url: 'https://api.openaq.org/v1/locations?limit=10000&country=' + countryCodeList[value],
-      shouldFetchData: true
+      url: 'https://api.openaq.org/v1/locations?limit=1000&country=' + countryCodeList[value] ,
+      shouldFetchData: true,
+      airQualityParamBar: true
     }))
     
   }
@@ -60,15 +63,29 @@ class AutocompleteCountry extends React.Component {
     fetch(this.state.url)
     .then(response => response.json())
     .then(response => this.setState({ countryData: response}))
-    .catch(err => console.log(err))
-    this.setState(() => ({
+    .catch(err => alert("Cannot connect", err))
+    this.setState(({
       shouldFetchData: false,
     }))
   }
-    
- 
-  
 
+  airBarUpdate = (value) => {
+    this.setState({
+      airParameter: value,
+      url: this.state.url + '&parameter=' + value,
+    })
+    console.log(this.state.url, this.state.airParameter)
+
+  }
+  handleParameterChange = (event) => {
+    this.setState({
+      airQualityParameter: event.target.value,
+      shouldFetchData: true,
+    })
+  }
+
+  
+  
 
   render () {
     const { text } = this.state;
@@ -79,8 +96,21 @@ class AutocompleteCountry extends React.Component {
           {this.renderSuggestions()}
         </div>
         <div className="CitiesDescription">
+          {this.state.airQualityParamBar &&  (
+            <div className="AirParamsBar">
+              <form>
+                <label>
+                  Pick an air quality parameter
+                </label>
+                <select value={this.state.airQualityParameter} onChange={this.handleParameterChange}>
+                  {parameterList.map(param => <option value={`${param}`}>{param.toUpperCase()}</option>)}
+                </select>
+              </form>
+              
+            </div>
+          )}
           {this.state.shouldFetchData && this.fetchData()}
-          {this.state.countryData && <CountryTenCitiesDisplay countryData={this.state.countryData}/>}
+          {this.state.countryData && <CountryTenCitiesDisplay countryData={this.state.countryData} airQualityParameter={this.state.airQualityParameter}/>}
         </div>
         
       </div>

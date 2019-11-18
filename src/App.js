@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import AutocompleteCountry from './AutocompleteCountry'
-import countryList from './Countries'
+import countryList from './utils/countries'
 
 class App extends React.Component {
   render() {
@@ -13,7 +13,6 @@ class App extends React.Component {
         <div className="App-Component">
             <AutocompleteCountry items={countryList}/>
         </div>
-        
       </div>
   );
     }
