@@ -1,5 +1,6 @@
 import React from 'react';
-import './AutocompleteCountry.css'
+import './AutocompleteCountry.css';
+import './AirQualityBar.css'
 import CountryTenCitiesDisplay from './CountryTenCitiesDisplay'
 const countryCodeList = {'Poland':'PL', 'Germany':'DE', 'France':'FR', 'Spain':'ES'};
 const parameterList = ['bc', 'co', 'no2', 'o3', 'pm10', 'pm25', 'so2'];
@@ -10,8 +11,6 @@ class AutocompleteCountry extends React.Component {
     this.state = {
       suggestions:  [],
       text: '',
-      isCountryPicked: false,
-      countryCode: '',
       country: '',
       countryData: null,
       url: 'https://api.openaq.org/v1/locations?country=',
@@ -36,9 +35,7 @@ class AutocompleteCountry extends React.Component {
     this.setState(() => ({
       text: value,
       suggestions: [],
-      isCountryPicked: true,
       country: value,
-      countryCode: countryCodeList[value],
       url: 'https://api.openaq.org/v1/locations?limit=1000&country=' + countryCodeList[value] ,
       shouldFetchData: true,
       airQualityParamBar: true
@@ -69,14 +66,29 @@ class AutocompleteCountry extends React.Component {
     }))
   }
 
+  createAirQualityBar () {
+    const { airQualityParameter } = this.state;
+    return (
+      <div>
+        <form>
+          <select value={airQualityParameter} onChange={this.handleParameterChange}>
+            <option> - parameter - </option>
+            {parameterList.map(param => <option value={`${param}`}>{param.toUpperCase()}</option>)}
+          </select>
+          
+        </form>
+      </div>
+    )
+  }
+
   airBarUpdate = (value) => {
     this.setState({
       airParameter: value,
       url: this.state.url + '&parameter=' + value,
     })
     console.log(this.state.url, this.state.airParameter)
-
   }
+
   handleParameterChange = (event) => {
     this.setState({
       airQualityParameter: event.target.value,
@@ -84,35 +96,24 @@ class AutocompleteCountry extends React.Component {
     })
   }
 
-  
-  
-
   render () {
-    const { text } = this.state;
+    const { text, countryData, airQualityParameter, airQualityParamBar, shouldFetchData } = this.state;
+    
     return (
       <div>
         <div className="AutocompleteCountry">
           <input type="text" value={text} onChange={this.onTextChange} placeholder="Poland, Germany, France or Spain"/>
           {this.renderSuggestions()}
         </div>
-        <div className="CitiesDescription">
-          {this.state.airQualityParamBar &&  (
-            <div className="AirParamsBar">
-              <form>
-                <label>
-                  Pick an air quality parameter
-                </label>
-                <select value={this.state.airQualityParameter} onChange={this.handleParameterChange}>
-                  {parameterList.map(param => <option value={`${param}`}>{param.toUpperCase()}</option>)}
-                </select>
-              </form>
-              
-            </div>
-          )}
-          {this.state.shouldFetchData && this.fetchData()}
-          {this.state.countryData && <CountryTenCitiesDisplay countryData={this.state.countryData} airQualityParameter={this.state.airQualityParameter}/>}
+        <div className="AirQualityBar">
+          {airQualityParamBar &&  this.createAirQualityBar()}
         </div>
-        
+        <div>
+          <div>
+          {shouldFetchData && this.fetchData()}
+          {countryData && <CountryTenCitiesDisplay countryData={countryData} airQualityParameter={airQualityParameter}/>}
+          </div>
+        </div>
       </div>
       
 

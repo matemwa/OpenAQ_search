@@ -1,9 +1,8 @@
 import React from 'react';
+import './CityTable.css'
 
 class CityTable extends React.Component {
-  
 
-  //
   fetchWiki = (city) => {
     let description;
     let url = 'https://en.wikipedia.org/w/api.php?action=query&prop=description&titles=' + city 
@@ -15,37 +14,31 @@ class CityTable extends React.Component {
 
   tableGenerator = () => {
     const { listOfCities } = this.props;
-    const table = listOfCities.map(city => (
+    
+    return listOfCities.map(city => (
       <tr>
         <td>
           {city}
          </td>
-       <td>
-        
-        </td>
+         <td>
+          description..
+         </td>
       </tr>
-      
     ))
-      return table
   }
 
   render() {
     return(
-      <div>
-        <table border="0">
+        <table className="CityTable" border="0">
           <thead>
-            <tr>
-                <th>
-                  
-                </th>
-            </tr>
+            
+            <th>City</th>
+            <th>Description</th>
           </thead>
           <tbody>
                 {this.tableGenerator()}
           </tbody>
         </table>
-      </div>
-      
     )
   }
 }

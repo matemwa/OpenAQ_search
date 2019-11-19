@@ -1,0 +1,13 @@
+.CityTable {
+    border: 1px solid grey;
+    table-layout: auto;
+    width: 100%;    
+    border-collapse: collapse;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.1), 0 2px 4px 1px  rgba(0,0,0,.18);
+}
+
+.CityTable td, th {
+    height: 36px;
+    border: 1px solid grey;
+    
+}
