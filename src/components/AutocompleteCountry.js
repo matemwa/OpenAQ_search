@@ -1,7 +1,7 @@
 import React from "react";
 import "./AutocompleteCountry.css";
 import "./AirQualityBar.css";
-import CountryTenCitiesDisplay from "./CountryTenCitiesDisplay";
+import GetTenCitiesTable from "./CountriesCitiesFiltered";
 const countryCodeList = {
 	Poland: "PL",
 	Germany: "DE",
@@ -14,14 +14,14 @@ class AutocompleteCountry extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			suggestions: [],
 			text: "",
+			suggestions: [],
 			country: "",
-			countryData: null,
 			url: "https://api.openaq.org/v1/locations?country=",
 			shouldFetchData: false,
 			airQualityParamBar: false,
-			airQualityParameter: ""
+			airQualityParameter: "",
+			countryData: null
 		};
 	}
 
@@ -138,7 +138,7 @@ class AutocompleteCountry extends React.Component {
 					<div>
 						{shouldFetchData && this.fetchData()}
 						{countryData && (
-							<CountryTenCitiesDisplay
+							<GetTenCitiesTable
 								countryData={countryData}
 								airQualityParameter={airQualityParameter}
 							/>
